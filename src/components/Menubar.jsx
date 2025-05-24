@@ -3,13 +3,24 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import MainRouter from './MainRouter';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Menubar = () => {
+    const navi = useNavigate()
+    const email = sessionStorage.getItem('email')
+    const uid = sessionStorage.getItem('uid')
+
     const location = useLocation();
     const {pathname} = location;
-
     const basename = process.env.PUBLIC_URL;
+
+    const onLogout = (e) => {
+        e.preventDefault();
+        if (window.confirm('로그아웃 하시겠습니까?')) {
+            sessionStorage.clear();
+            navi('/')
+        }
+    }
 
     return (
         <>
@@ -24,10 +35,19 @@ const Menubar = () => {
                             navbarScroll
                         >
                             <Nav.Link href= {`${basename}/`} active={pathname === '/' && true}>Home</Nav.Link>
-                            <Nav.Link href= {`${basename}/cart`} active={pathname === '/cart' && true}>장바구니</Nav.Link>
+                            {email &&
+                                <Nav.Link href= {`${basename}/cart`} active={pathname === '/cart' && true}>장바구니</Nav.Link>
+                            }
                         </Nav>
                         <Nav>
-                            <Nav.Link href= {`${basename}/login`} active={pathname === '/login' && true}>로그인</Nav.Link>
+                            {email ?
+                                <>
+                                    <Nav.Link href= {`#`} active={true}>{email}</Nav.Link>
+                                    <Nav.Link href= {`#`} onClick={onLogout}>로그아웃</Nav.Link>
+                                </>
+                                :
+                                <Nav.Link href= {`${basename}/login`} active={pathname === '/login' && true}>로그인</Nav.Link>
+                            }
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
