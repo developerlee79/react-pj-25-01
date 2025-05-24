@@ -2,9 +2,9 @@ import React from 'react'
 import { Container } from 'react-bootstrap'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './HomePage'
-import CartPage from '../../../client-programming-main/src/components/user/CartPage'
-import LoginPage from '../../../client-programming-main/src/components/user/LoginPage'
-import JoinPage from '../../../client-programming-main/src/components/user/JoinPage'
+import CartPage from './CartPage'
+import LoginPage from './LoginPage'
+import JoinPage from './user/JoinPage'
 
 const MainRouter = () => {
     return (
@@ -15,7 +15,6 @@ const MainRouter = () => {
                     <Route path='/cart' element={<CartPage/>}/>
                     <Route path='/login' element={<LoginPage/>}/>
                     <Route path='/join' element={<JoinPage/>}/>
-
                 </Route>
             </Routes>
         </Container>
