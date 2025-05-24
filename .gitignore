@@ -1,5 +1,5 @@
 # Env
-/src/firebase.jss
+/src/firebase.js
 .env
 /node_modules
 /.pnp
