@@ -29,7 +29,8 @@ const BookPage = ({ book }) => {
                 <Modal.Body>
                     <Row>
                         <Col xs={3}>
-                            <img src={book.thumbnail || 'https://placehold.co/100x150'} width='100%'/>
+                            <img src={book.thumbnail || 'https://placehold.co/100x150'}
+                                width='100%'/>
                         </Col>
                         <Col className='align-self-center'>
                             <h5>{book.title}</h5>
