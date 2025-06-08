@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import { app } from '../../firebase'
-import { getDatabase, ref, onValue, remove } from 'firebase/database'
-import { Button, Table } from 'react-bootstrap';
+import {useEffect, useState} from 'react';
+import {app} from '../../firebase';
+import {getDatabase, ref, onValue, remove} from 'firebase/database';
+import {Button, Table} from 'react-bootstrap';
 import BookPage from '../BookPage';
 
 const CartPage = () => {
-
-    const uid = sessionStorage.getItem('uid');
     const [loading, setLoading] = useState(false);
     const db = getDatabase(app);
     const [books, setBooks] = useState([]);
 
     const getCart = () => {
         setLoading(true);
+        const uid = sessionStorage.getItem('uid');
         onValue(ref(db, `cart/${uid}`), snapshot => {
-            const rows = [];
+            let rows = [];
             snapshot.forEach(row => {
-                // console.log(row.key, row.val());
-                rows.push({ key: row.key, ...row.val() });
-            })
+                rows.push({key: row.key, ...row.val()});
+            });
             console.log(rows);
             setBooks(rows);
             setLoading(false);
@@ -29,39 +27,46 @@ const CartPage = () => {
         getCart();
     }, []);
 
-    const onClickRemove = (book) => {
-        if (window.confirm(`'${book.title}'을(를) 삭제하시겠습니까?!`)) {
-            // 삭제하기
-            remove(ref(db, `cart/${uid}/${book.isbn}`))
+    const onClickDelete = (book) => {
+        if (window.confirm(`'${book.title}'를(을) 삭제하실래요?`)) {
+            const uid = sessionStorage.getItem('uid');
+            remove(ref(db, `cart/${uid}/${book.isbn}`));
         }
     }
 
-    if (loading) return <h1 className='text-center my-4'>로딩중!</h1>
-
+    if (loading) return <h1 className='my-5 text-center'>로딩중......</h1>
     return (
-        <div>
-            <h1 className='my-4 text-center'>장바구니</h1>
-            <Table>
+        <div className='my-5'>
+            <h1 className='text-center mb-5'>장바구니</h1>
+            <Table striped hover style={{fontSize: '12px'}}>
                 <thead>
-                    <tr>
-                        <td></td>
-                        <td>제목</td>
-                        <td>등록일</td>
-                        <td>삭제</td>
-                    </tr>
+                <tr style={{textAlign: 'center'}}>
+                    <td width={50}></td>
+                    <td>제목</td>
+                    <td>저자</td>
+                    <td>출판사</td>
+                    <td>가격</td>
+                    <td>등록일</td>
+                    <td>삭제</td>
+                </tr>
                 </thead>
                 <tbody>
-                    {books.map(book =>
-                        <tr key={book.isbn}>
-                            <td width={50}><BookPage book={book} /></td>
-                            <td>{book.title}</td>
-                            <td>{book.date}</td>
-                            <td>
-                                <Button onClick={() => onClickRemove(book)}
-                                    size='sm' variant='outline-danger'>삭제</Button>
-                            </td>
-                        </tr>
-                    )}
+                {books.map(book =>
+                    <tr key={book.key}>
+                        <td><BookPage doc={book}/></td>
+                        <td>{book.title}</td>
+                        <td>{book.authors}</td>
+                        <td>{book.publisher}</td>
+                        <td>{book.price}원</td>
+                        <td>{book.date}</td>
+                        <td>
+                            <Button variant='outline-danger' size='sm'
+                                    onClick={() => onClickDelete(book)}>
+                                삭제
+                            </Button>
+                        </td>
+                    </tr>
+                )}
                 </tbody>
             </Table>
         </div>

@@ -6,20 +6,18 @@ import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
 
 const WritePage = () => {
+    const [loading, setLoading] = useState(false);
+    const nav = useNavigate();
     const db = getFirestore(app);
-
-    const navi = useNavigate();
-
     const [form, setForm] = useState({
-        email: sessionStorage.getItem('email'),
-        date: '',
-        title: '',
-        body: ''
+        email:sessionStorage.getItem('email'),
+        title:'',
+        body:'',
+        date:''
     });
+    const {email, title, body, date} = form;
 
-    const { title, body } = form;
-
-    const onChangeForm = (e) => {
+    const onChange = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -31,46 +29,48 @@ const WritePage = () => {
         if (title === '' || body === '') {
             alert('제목 or 내용을 입력하세요')
         } else {
-            // 게시글 등록
-            const date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-            await addDoc(collection(db, 'post'), { ...form, date});
-            navi('/post')
+            if(window.confirm('정말로 등록하실래요?')){
+                setLoading(true);
+                const date = moment(new Date).format('YYYY-MM-DD HH:mm:ss');
+                await addDoc(collection(db, 'bbs'), {...form, date});
+                setLoading(false);
+                nav('/bbs');
+            }
         }
     }
 
     const onReset = (e) => {
         e.preventDefault();
-        setForm({
-            ...form,
-            title: '',
-            body: ''
-        });
+        if (window.confirm('정말로 취소하실래요?')) {
+            setForm({
+                title:'',
+                body:''
+            });
+        }
+    }
+
+    if (loading) {
+        return <h1 className='my-5 text-center'>로딩중......</h1>
     }
 
     return (
-        <div>
-            <h1 className='text-center my-4'>글쓰기</h1>
-
-            <Row className='justify-content-center'>
-                <Col md={8}>
-                    <Form onSubmit={onSubmit} onReset={onReset}>
-                        <Form.Control className='mb-3'
-                            name='title' value={title} onChange={onChangeForm}
-                            placeholder='제목을 입력하세요' />
-                        <Form.Control
-                            as='textarea' rows={10}
-                            name='body' value={body} onChange={onChangeForm}
-                            placeholder='내용을 입력하세요' />
-                        <div className='mt-3 text-center'>
-                            <Button type='submit'
-                                className='px-5 mx-2' variant="dark">등록</Button>
-                            <Button type='reset'
-                                className='px-5' variant="secondary">취소</Button>
-                        </div>
-                    </Form>
-                </Col>
-            </Row>
-        </div>
+        <Row className='justify-content-center'>
+            <h1 className='my-5 text-center'>글쓰기</h1>
+            <Col md={8}>
+                <Form onSubmit={onSubmit} onReset={onReset}>
+                    <Form.Control placeholder='제목을 입력하세요.'
+                                  onChange={onChange}
+                                  name='title' value={title} className='mb-2'/>
+                    <Form.Control placeholder='내용을 입력하세요.'
+                                  onChange={onChange}
+                                  name='body' value={body} as='textarea' rows={10}/>
+                    <div className='text-center mt-3'>
+                        <Button className='px-5 mx-2' type='submit'>등록</Button>
+                        <Button className='px-5' type='reset' variant='secondary'>취소</Button>
+                    </div>
+                </Form>
+            </Col>
+        </Row>
     )
 }
 
