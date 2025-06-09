@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
-import { app } from '../../firebase'
-import { getFirestore, addDoc, collection } from 'firebase/firestore'
+import React, {useState} from 'react'
+import {Button, Col, Form, Row} from 'react-bootstrap'
+import {app} from '../../firebase'
+import {getFirestore, addDoc, collection} from 'firebase/firestore'
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 const WritePage = () => {
     const [loading, setLoading] = useState(false);
     const nav = useNavigate();
     const db = getFirestore(app);
     const [form, setForm] = useState({
-        email:sessionStorage.getItem('email'),
-        title:'',
-        body:'',
-        date:''
+        email: sessionStorage.getItem('email'),
+        title: '',
+        body: '',
+        date: ''
     });
     const {email, title, body, date} = form;
 
@@ -24,15 +24,15 @@ const WritePage = () => {
         });
     }
 
-    const onSubmit = async(e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         if (title === '' || body === '') {
             alert('제목 or 내용을 입력하세요')
         } else {
-            if(window.confirm('정말로 등록하실래요?')){
+            if (window.confirm('정말로 등록하실래요?')) {
                 setLoading(true);
                 const date = moment(new Date).format('YYYY-MM-DD HH:mm:ss');
-                await addDoc(collection(db, 'post'), {...form, date});
+                await addDoc(collection(db, 'bbs'), {...form, date});
                 setLoading(false);
                 nav('/bbs');
             }
@@ -43,8 +43,8 @@ const WritePage = () => {
         e.preventDefault();
         if (window.confirm('정말로 취소하실래요?')) {
             setForm({
-                title:'',
-                body:''
+                title: '',
+                body: ''
             });
         }
     }
