@@ -1,8 +1,8 @@
-import { Button, Table } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom';
-import { app } from '../../firebase'
-import { getFirestore, collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import {Button, Table} from 'react-bootstrap'
+import {useNavigate} from 'react-router-dom';
+import {app} from '../../firebase'
+import {getFirestore, collection, query, orderBy, onSnapshot} from 'firebase/firestore';
+import {useEffect, useState} from 'react';
 
 const ListPage = () => {
     const basename = process.env.PUBLIC_URL;
@@ -21,8 +21,8 @@ const ListPage = () => {
         const rows = [];
         let no = 0;
 
-        onSnapshot(q, snapshot=> {
-            snapshot.forEach(row=> {
+        onSnapshot(q, snapshot => {
+            snapshot.forEach(row => {
                 no = no + 1;
                 const start = (page - 1) * 5 + 1;
                 const end = (page * 5);
@@ -39,7 +39,7 @@ const ListPage = () => {
             
             if (sessionStorage.getItem('page')) {
                 const intPage = parseInt(sessionStorage.getItem('page'));
-                setPage(intPage > lastPage ? intPage - 1: intPage);
+                setPage(intPage > lastPage ? intPage - 1 : intPage);
                 sessionStorage.removeItem('page');
             }
 
@@ -47,15 +47,9 @@ const ListPage = () => {
         });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getList();
     }, [page]);
-
-    useEffect(()=> {
-
-    },[]);
-
-    useEffect(()=> {}, [])
 
     const onClickWrite = () => {
         if (email) {
@@ -75,42 +69,42 @@ const ListPage = () => {
             <h1 className='my-5 text-center'>게시글</h1>
             <div className='my-3'>
                 <Button className='px-5' variant='outline-primary' size='sm'
-                    onClick={onClickWrite}>글쓰기</Button>
+                        onClick={onClickWrite}>글쓰기</Button>
             </div>
             <Table striped bordered hover>
                 <thead>
-                    <tr className='text-center'>
-                        <td width='30'>No.</td>
-                        <td width='50%'>Title</td>
-                        <td>Writer</td>
-                        <td>Date</td>
-                    </tr>
+                <tr className='text-center'>
+                    <td width='30'>No.</td>
+                    <td width='50%'>Title</td>
+                    <td>Writer</td>
+                    <td>Date</td>
+                </tr>
                 </thead>
                 <tbody>
-                    {list.map(bbs =>
-                        <tr key={bbs.id}>
-                            <td>{bbs.no}</td>
-                            <td className='ellipsis'>
-                                <div className='ellipsis'>
-                                    <a href={`${basename}/bbs/${bbs.id}?page=${page}`}>{bbs.title}</a>
-                                </div>
-                            </td>
-                            <td>
-                                <div className='ellipsis'>{bbs.email}</div>
-                            </td>
-                            <td>
-                                <div className='ellipsis'>{bbs.date}</div>
-                            </td>
-                        </tr>
-                    )}
+                {list.map(bbs =>
+                    <tr key={bbs.id}>
+                        <td>{bbs.no}</td>
+                        <td className='ellipsis'>
+                            <div className='ellipsis'>
+                                <a href={`${basename}/bbs/${bbs.id}?page=${page}`}>{bbs.title}</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div className='ellipsis'>{bbs.email}</div>
+                        </td>
+                        <td>
+                            <div className='ellipsis'>{bbs.date}</div>
+                        </td>
+                    </tr>
+                )}
                 </tbody>
             </Table>
             <div className='text-center'>
                 <Button onClick={() => setPage(page - 1)}
-                    variant='outline-primary' size='sm' disabled={page === 1}>이전</Button>
+                        variant='outline-primary' size='sm' disabled={page === 1}>이전</Button>
                 <span className='px-2'>{page}/{last}</span>
                 <Button onClick={() => setPage(page + 1)}
-                    variant='outline-primary' size='sm' disabled={page === last}>다음</Button>
+                        variant='outline-primary' size='sm' disabled={page === last}>다음</Button>
             </div>
         </div>
     )
