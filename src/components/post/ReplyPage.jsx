@@ -1,12 +1,12 @@
 import moment from 'moment/moment';
-import { useState, useRef } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap'
-import { app } from '../../firebase'
-import { getFirestore, addDoc, collection } from 'firebase/firestore';
+import {useState} from 'react';
+import {Button, Form, Row, Col} from 'react-bootstrap'
+import {app} from '../../firebase'
+import {getFirestore, addDoc, collection} from 'firebase/firestore';
 import ReplyList from './ReplyList';
 import TextareaAutosize from 'react-textarea-autosize';
 
-const ReplyPage = ({ id }) => {
+const ReplyPage = ({id}) => {
     const db = getFirestore(app);
     const [loading, setLoading] = useState(false);
     const email = sessionStorage.getItem('email');
@@ -28,16 +28,19 @@ const ReplyPage = ({ id }) => {
         }
     }
 
-    if (loading) return <h1 className='my-5 text-center'>로딩중......</h1>
+    if (loading) {
+        return <h1 className='my-5 text-center'>로딩중......</h1>
+    }
+
     return (
         <>
             <Row className='justify-content-center my-5'>
-                <Col md={10} >
+                <Col md={10}>
                     {email ?
                         <div>
                             <Form>
-                                <TextareaAutosize 
-                                    onChange = {(e)=>setContents(e.target.value)}
+                                <TextareaAutosize
+                                    onChange={(e) => setContents(e.target.value)}
                                     className='textarea' placeholder='내용을 입력하세요.'/>
                                 <Button onClick={onWrite} className='px-5 mt-2'>등록</Button>
                             </Form>

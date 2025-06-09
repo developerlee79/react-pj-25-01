@@ -32,7 +32,7 @@ const WritePage = () => {
             if(window.confirm('정말로 등록하실래요?')){
                 setLoading(true);
                 const date = moment(new Date).format('YYYY-MM-DD HH:mm:ss');
-                await addDoc(collection(db, 'bbs'), {...form, date});
+                await addDoc(collection(db, 'post'), {...form, date});
                 setLoading(false);
                 nav('/bbs');
             }
