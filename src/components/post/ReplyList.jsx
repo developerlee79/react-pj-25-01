@@ -1,6 +1,16 @@
 import {Row, Col, Button, Form} from 'react-bootstrap'
 import {app} from '../../firebase'
-import {getFirestore, collection, query, orderBy, where, onSnapshot} from 'firebase/firestore'
+import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    where,
+    onSnapshot,
+    deleteDoc,
+    updateDoc,
+    doc
+} from 'firebase/firestore'
 import {useEffect, useState} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import {CiEdit} from "react-icons/ci";
@@ -52,6 +62,28 @@ const ReplyList = ({pid}) => {
         setList(data);
     }
 
+    const onClickSave = async (reply) => {
+        const ref = doc(db, 'reply', reply.id)
+        await updateDoc(ref, {contents: reply.contents})
+
+        const updatedList = list.map(re =>
+            re.id === reply.id ? {...re, edit: false, text: reply.contents} : re
+        )
+
+        setList(updatedList);
+    }
+
+    const onClickDelete = async (id) => {
+        if (!window.confirm('삭제하시겠습니까?')) {
+            return;
+        }
+
+        await deleteDoc(doc(db, 'reply', id));
+
+        const updatedList = list.filter(reply => reply.id !== id);
+        setList(updatedList);
+    }
+
     return (
         <Row className='justify-content-center'>
             <Col md={10}>
@@ -64,7 +96,7 @@ const ReplyList = ({pid}) => {
                             {reply.email === login && !reply.edit &&
                                 <Col className='text-end'>
                                     <CiEdit onClick={() => onClickUpdate(reply.id)} className='edit'/>
-                                    <MdDeleteOutline className='delete'/>
+                                    <MdDeleteOutline className='delete' onClick={() => onClickDelete(reply.id)}/>
                                 </Col>
                             }
                         </Row>
@@ -75,7 +107,8 @@ const ReplyList = ({pid}) => {
                                                   value={reply.contents}/>
                                 <div className='text-end'>
                                     <Button size='sm' variant='primary' className='mx-2'
-                                            disabled={reply.text === reply.contents}>저장</Button>
+                                            disabled={reply.text === reply.contents}
+                                            onClick={() => onClickSave(reply)}>저장</Button>
                                     <Button onClick={() => onClickCancel(reply)}
                                             size='sm' variant='secondary'>취소</Button>
                                 </div>

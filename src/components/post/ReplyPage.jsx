@@ -5,11 +5,13 @@ import {app} from '../../firebase'
 import {getFirestore, addDoc, collection} from 'firebase/firestore';
 import ReplyList from './ReplyList';
 import TextareaAutosize from 'react-textarea-autosize';
+import {useNavigate} from "react-router-dom";
 
 const ReplyPage = ({id}) => {
     const db = getFirestore(app);
     const [loading, setLoading] = useState(false);
     const email = sessionStorage.getItem('email');
+    const nav = useNavigate();
     const [contents, setContents] = useState('');
 
     const onWrite = async () => {
@@ -26,6 +28,11 @@ const ReplyPage = ({id}) => {
             await addDoc(collection(db, 'reply'), reply);
             setLoading(false);
         }
+    }
+
+    const onLogin = async (e) => {
+        e.preventDefault()
+        nav(`/login`);
     }
 
     if (loading) {
@@ -47,7 +54,7 @@ const ReplyPage = ({id}) => {
                         </div>
                         :
                         <div className='tex-end'>
-                            <Button className='w-100'>로그인</Button>
+                            <Button className='w-100' onClick={onLogin}>로그인</Button>
                         </div>
                     }
                 </Col>
